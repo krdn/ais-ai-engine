@@ -1,0 +1,62 @@
+{
+  "name": "@ais/ai-engine",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./src/adapters/index.ts",
+      "import": "./dist/adapters/index.js"
+    },
+    "./router": {
+      "types": "./src/router/index.ts",
+      "import": "./dist/router/index.js"
+    },
+    "./prompts": {
+      "types": "./src/prompts/index.ts",
+      "import": "./dist/prompts/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "echo 'lint placeholder'",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ais/shared": "^0.0.1",
+    "@ais/analysis": "^0.0.1"
+  },
+  "peerDependencies": {
+    "ai": ">=4",
+    "@ai-sdk/openai": ">=1",
+    "@ai-sdk/anthropic": ">=1",
+    "@ai-sdk/google": ">=1",
+    "@ai-sdk/deepseek": ">=1",
+    "@ai-sdk/mistral": ">=1",
+    "@ai-sdk/cohere": ">=1",
+    "@ai-sdk/xai": ">=1",
+    "@ai-sdk/openai-compatible": ">=0",
+    "ollama-ai-provider-v2": ">=1"
+  },
+  "devDependencies": {
+    "ai": "^6.0.64",
+    "@ai-sdk/openai": "^3.0.23",
+    "@ai-sdk/anthropic": "^3.0.44",
+    "@ai-sdk/google": "^3.0.18",
+    "@ai-sdk/deepseek": "^2.0.18",
+    "@ai-sdk/mistral": "^3.0.19",
+    "@ai-sdk/cohere": "^3.0.19",
+    "@ai-sdk/xai": "^3.0.50",
+    "@ai-sdk/openai-compatible": "^2.0.30",
+    "ollama-ai-provider-v2": "^3.0.3",
+    "@types/node": "^22",
+    "tsup": "^8",
+    "typescript": "^5"
+  }
+}
