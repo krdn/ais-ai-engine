@@ -6,6 +6,8 @@ export default defineConfig({
     "src/adapters/index.ts",
     "src/router/index.ts",
     "src/prompts/index.ts",
+    "src/templates.ts",
+    "src/types.ts",
   ],
   format: ["esm"],
   dts: true,

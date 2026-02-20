@@ -1,353 +1,274 @@
 /**
- * AI Engine 핵심 타입 정의
- *
- * Prisma 의존성 없이 독립적으로 사용할 수 있는 타입들입니다.
- * apps/web에서 Prisma 모델과 매핑하여 사용합니다.
+ * Universal LLM Hub - Core Types
+ * 
+ * DB 스키마에 맞는 타입 정의와 함께 기존 타입과의 호환성을 유지합니다.
  */
 
-import type { LanguageModel, LanguageModelUsage, ModelMessage } from "ai"
+import type { Provider, Model, FeatureMapping } from '@prisma/client';
 
 // =============================================================================
 // 기본 타입 (Enums)
 // =============================================================================
 
 export type ProviderType =
-  | "openai"
-  | "anthropic"
-  | "google"
-  | "ollama"
-  | "deepseek"
-  | "mistral"
-  | "cohere"
-  | "xai"
-  | "zhipu"
-  | "moonshot"
-  | "openrouter"
-  | "custom"
+  | 'openai'
+  | 'anthropic'
+  | 'google'
+  | 'ollama'
+  | 'deepseek'
+  | 'mistral'
+  | 'cohere'
+  | 'xai'
+  | 'zhipu'
+  | 'moonshot'
+  | 'openrouter'
+  | 'custom';
 
-export type ProviderName =
-  | "anthropic"
-  | "openai"
-  | "google"
-  | "ollama"
-  | "deepseek"
-  | "mistral"
-  | "cohere"
-  | "xai"
-  | "zhipu"
-  | "moonshot"
-  | "openrouter"
+export type AuthType = 'none' | 'api_key' | 'bearer' | 'custom_header';
 
-export type FeatureType =
-  | "learning_analysis"
-  | "counseling_suggest"
-  | "report_generate"
-  | "face_analysis"
-  | "palm_analysis"
-  | "personality_summary"
-  | "saju_analysis"
-  | "mbti_analysis"
-  | "vark_analysis"
-  | "name_analysis"
-  | "zodiac_analysis"
-  | "compatibility_analysis"
-  | "general_chat"
+export type CostTier = 'free' | 'low' | 'medium' | 'high';
 
-export type AuthType = "none" | "api_key" | "bearer" | "custom_header"
-
-export type CostTier = "free" | "low" | "medium" | "high"
-
-export type QualityTier = "fast" | "balanced" | "premium"
+export type QualityTier = 'fast' | 'balanced' | 'premium';
 
 export type Capability =
-  | "vision"
-  | "function_calling"
-  | "json_mode"
-  | "streaming"
-  | "tools"
+  | 'vision'
+  | 'function_calling'
+  | 'json_mode'
+  | 'streaming'
+  | 'tools';
 
-export type MatchMode = "auto_tag" | "specific_model"
+export type MatchMode = 'auto_tag' | 'specific_model';
 
-export type FallbackMode = "next_priority" | "any_available" | "fail"
+export type FallbackMode = 'next_priority' | 'any_available' | 'fail';
 
 // =============================================================================
 // Provider 관련 타입
 // =============================================================================
 
-export interface ProviderConfig {
-  id: string
-  name: string
-  providerType: ProviderType
-  baseUrl: string | null
-  apiKeyEncrypted: string | null
-  authType: AuthType
-  customAuthHeader: string | null
-  capabilities: Capability[]
-  costTier: CostTier
-  qualityTier: QualityTier
-  isEnabled: boolean
-  isValidated: boolean
-  priority: number
-  createdAt: Date
-  updatedAt: Date
+/**
+ * DB Provider 모델의 TypeScript 타입
+ * Prisma 타입에서 파생
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ProviderConfig extends Provider { }
+
+/**
+ * Provider 생성/수정 시 입력 타입
+ */
+export interface ProviderInput {
+  name: string;
+  providerType: ProviderType;
+  baseUrl?: string | null;
+  apiKey?: string | null;
+  authType: AuthType;
+  customAuthHeader?: string | null;
+  capabilities?: Capability[];
+  costTier: CostTier;
+  qualityTier: QualityTier;
+  isEnabled?: boolean;
 }
 
-export interface ProviderInput {
-  name: string
-  providerType: ProviderType
-  baseUrl?: string | null
-  apiKey?: string | null
-  authType: AuthType
-  customAuthHeader?: string | null
-  capabilities?: Capability[]
-  costTier: CostTier
-  qualityTier: QualityTier
-  isEnabled?: boolean
+/**
+ * Provider와 포함된 Models
+ */
+export interface ProviderWithModels extends Provider {
+  models: Model[];
+  hasApiKey?: boolean; // API 응답에서 추가되는 필드
 }
 
 // =============================================================================
 // Model 관련 타입
 // =============================================================================
 
-export interface ModelConfig {
-  id: string
-  providerId: string
-  modelId: string
-  displayName: string
-  contextWindow: number | null
-  supportsVision: boolean
-  supportsTools: boolean
-  defaultParams: ModelParams | null
-  isDefault: boolean
-}
+/**
+ * DB Model 모델의 TypeScript 타입
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ModelConfig extends Model { }
 
+/**
+ * Model 생성/수정 시 입력 타입
+ */
 export interface ModelInput {
-  providerId: string
-  modelId: string
-  displayName: string
-  contextWindow?: number | null
-  supportsVision?: boolean
-  supportsTools?: boolean
-  defaultParams?: ModelParams | null
-  isDefault?: boolean
+  providerId: string;
+  modelId: string;
+  displayName: string;
+  contextWindow?: number | null;
+  supportsVision?: boolean;
+  supportsTools?: boolean;
+  defaultParams?: ModelParams | null;
+  isDefault?: boolean;
 }
 
+/**
+ * 모델 파라미터
+ */
 export interface ModelParams {
-  temperature?: number
-  maxOutputTokens?: number
-  topP?: number
-  frequencyPenalty?: number
-  presencePenalty?: number
-  [key: string]: unknown
-}
-
-export interface ModelInfo {
-  id: string
-  modelId: string
-  displayName: string
-  contextWindow?: number
-  supportsVision: boolean
-  supportsTools: boolean
+  temperature?: number;
+  maxTokens?: number;
+  topP?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+  [key: string]: unknown;
 }
 
 // =============================================================================
-// 검증 및 레지스트리 타입
+// FeatureMapping 관련 타입
 // =============================================================================
 
-export interface ValidationResult {
-  isValid: boolean
-  error?: string
-  details?: Record<string, unknown>
+/**
+ * DB FeatureMapping 모델의 TypeScript 타입
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface FeatureMappingConfig extends FeatureMapping { }
+
+/**
+ * FeatureMapping 생성/수정 시 입력 타입
+ */
+export interface FeatureMappingInput {
+  featureType: string;
+  matchMode: MatchMode;
+  requiredTags?: string[];
+  excludedTags?: string[];
+  specificModelId?: string | null;
+  priority?: number;
+  fallbackMode: FallbackMode;
 }
 
+/**
+ * 해상도 요구사항
+ * 모델 선택 시 추가 필터링 조건
+ */
+export interface ResolutionRequirements {
+  needsVision?: boolean;
+  needsTools?: boolean;
+  preferredCost?: CostTier;
+  preferredQuality?: QualityTier;
+  minContextWindow?: number;
+}
+
+// =============================================================================
+// 레지스트리 관련 타입
+// =============================================================================
+
+import type { BaseAdapter } from './adapters/base';
+
+/**
+ * 레지스트리 엔트리 - Provider와 Adapter 연결
+ */
+export interface RegistryEntry {
+  provider: ProviderConfig;
+  adapter: BaseAdapter;
+}
+
+/**
+ * 해상도 결과 - 라우팅 결과
+ */
 export interface ResolutionResult {
-  provider: ProviderConfig
-  model: ModelConfig
+  provider: ProviderConfig;
+  model: ModelConfig;
+}
+
+/**
+ * 검증 결과
+ */
+export interface ValidationResult {
+  isValid: boolean;
+  error?: string;
+  details?: Record<string, unknown>;
+}
+
+/**
+ * 모델 정보
+ */
+export interface ModelInfo {
+  id: string;
+  modelId: string;
+  displayName: string;
+  contextWindow?: number;
+  supportsVision: boolean;
+  supportsTools: boolean;
+}
+
+// =============================================================================
+// 기존 타입과의 호환성
+// =============================================================================
+
+import type { ProviderName as LegacyProviderName, FeatureType as LegacyFeatureType } from './providers/types';
+
+export type ProviderName = LegacyProviderName;
+export type FeatureType = LegacyFeatureType;
+
+export { PROVIDER_CONFIGS, COST_PER_MILLION_TOKENS, type FeatureConfig } from './providers/types';
+
+/**
+ * Legacy ProviderName을 새로운 ProviderType으로 매핑
+ */
+export const PROVIDER_NAME_TO_TYPE: Record<LegacyProviderName, ProviderType> = {
+  anthropic: 'anthropic',
+  openai: 'openai',
+  google: 'google',
+  ollama: 'ollama',
+  deepseek: 'deepseek',
+  mistral: 'mistral',
+  cohere: 'cohere',
+  xai: 'xai',
+  zhipu: 'zhipu',
+  moonshot: 'moonshot',
+  openrouter: 'openrouter',
+};
+
+/**
+ * ProviderType을 Legacy ProviderName으로 매핑
+ */
+export function providerTypeToName(type: ProviderType): LegacyProviderName | null {
+  const entries = Object.entries(PROVIDER_NAME_TO_TYPE) as [LegacyProviderName, ProviderType][];
+  const found = entries.find(([, t]) => t === type);
+  return found ? found[0] : null;
+}
+
+/**
+ * Legacy ProviderName을 ProviderType으로 변환
+ */
+export function providerNameToType(name: LegacyProviderName): ProviderType {
+  return PROVIDER_NAME_TO_TYPE[name];
 }
 
 // =============================================================================
 // 어댑터 관련 타입
 // =============================================================================
 
-export type { LanguageModel, LanguageModelUsage, ModelMessage }
+import type { ModelMessage, LanguageModel, LanguageModelUsage } from 'ai';
 
+export type { LanguageModelUsage };
+
+/**
+ * 생성 옵션
+ */
 export interface GenerateOptions {
-  model: LanguageModel
-  messages?: ModelMessage[]
-  prompt?: string
-  system?: string
-  maxOutputTokens?: number
-  temperature?: number
-  topP?: number
-  [key: string]: unknown
+  model: LanguageModel;
+  messages?: ModelMessage[];
+  prompt?: string;
+  system?: string;
+  maxTokens?: number;
+  temperature?: number;
+  topP?: number;
+  [key: string]: unknown;
 }
 
+/**
+ * 생성 결과
+ */
 export interface GenerateResult {
-  text: string
-  usage: LanguageModelUsage
+  text: string;
+  usage: LanguageModelUsage;
 }
 
+/**
+ * 스트림 결과
+ */
 export interface StreamResult {
-  stream: AsyncIterable<string>
-  provider: string
-  model: string
-}
-
-// =============================================================================
-// 제공자 설정 및 비용 정보
-// =============================================================================
-
-export interface ProviderStaticConfig {
-  name: ProviderName
-  displayName: string
-  requiresApiKey: boolean
-  supportsVision: boolean
-  defaultModel: string
-  models: string[]
-}
-
-export const PROVIDER_CONFIGS: Record<ProviderName, ProviderStaticConfig> = {
-  anthropic: {
-    name: "anthropic",
-    displayName: "Claude",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "claude-sonnet-4-5",
-    models: ["claude-sonnet-4-5", "claude-3-5-haiku-latest"],
-  },
-  openai: {
-    name: "openai",
-    displayName: "ChatGPT",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "gpt-4o",
-    models: ["gpt-4o", "gpt-4o-mini"],
-  },
-  google: {
-    name: "google",
-    displayName: "Gemini",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "gemini-2.5-flash-preview-05-20",
-    models: ["gemini-2.5-flash-preview-05-20", "gemini-2.0-flash"],
-  },
-  ollama: {
-    name: "ollama",
-    displayName: "Ollama",
-    requiresApiKey: false,
-    supportsVision: false,
-    defaultModel: "llama3.2:3b",
-    models: [],
-  },
-  deepseek: {
-    name: "deepseek",
-    displayName: "DeepSeek",
-    requiresApiKey: true,
-    supportsVision: false,
-    defaultModel: "deepseek-chat",
-    models: ["deepseek-chat", "deepseek-reasoner"],
-  },
-  mistral: {
-    name: "mistral",
-    displayName: "Mistral",
-    requiresApiKey: true,
-    supportsVision: false,
-    defaultModel: "mistral-large-latest",
-    models: ["mistral-large-latest", "mistral-small-latest", "codestral-latest"],
-  },
-  cohere: {
-    name: "cohere",
-    displayName: "Cohere",
-    requiresApiKey: true,
-    supportsVision: false,
-    defaultModel: "command-r-plus",
-    models: ["command-r-plus", "command-r"],
-  },
-  xai: {
-    name: "xai",
-    displayName: "Grok",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "grok-3",
-    models: ["grok-3", "grok-3-mini"],
-  },
-  zhipu: {
-    name: "zhipu",
-    displayName: "GLM (Z.ai)",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "glm-4v-plus",
-    models: ["glm-4v-plus", "glm-4-plus", "glm-4-flash"],
-  },
-  moonshot: {
-    name: "moonshot",
-    displayName: "Kimi",
-    requiresApiKey: true,
-    supportsVision: false,
-    defaultModel: "kimi-k2.5-preview",
-    models: ["kimi-k2.5-preview", "kimi-k2-preview", "moonshot-v1-128k"],
-  },
-  openrouter: {
-    name: "openrouter",
-    displayName: "OpenRouter",
-    requiresApiKey: true,
-    supportsVision: true,
-    defaultModel: "openai/gpt-4o",
-    models: [
-      "openai/gpt-4o",
-      "openai/gpt-4o-mini",
-      "anthropic/claude-sonnet-4-5",
-      "google/gemini-2.5-flash",
-    ],
-  },
-}
-
-export const COST_PER_MILLION_TOKENS: Record<
-  ProviderName,
-  { input: number; output: number }
-> = {
-  anthropic: { input: 3.0, output: 15.0 },
-  openai: { input: 2.5, output: 10.0 },
-  google: { input: 0.3, output: 2.5 },
-  ollama: { input: 0, output: 0 },
-  deepseek: { input: 0.27, output: 1.1 },
-  mistral: { input: 2.0, output: 6.0 },
-  cohere: { input: 2.5, output: 10.0 },
-  xai: { input: 3.0, output: 15.0 },
-  zhipu: { input: 0.35, output: 1.4 },
-  moonshot: { input: 1.0, output: 4.0 },
-  openrouter: { input: 2.5, output: 10.0 },
-}
-
-// =============================================================================
-// Legacy 호환성 매핑
-// =============================================================================
-
-export const PROVIDER_NAME_TO_TYPE: Record<ProviderName, ProviderType> = {
-  anthropic: "anthropic",
-  openai: "openai",
-  google: "google",
-  ollama: "ollama",
-  deepseek: "deepseek",
-  mistral: "mistral",
-  cohere: "cohere",
-  xai: "xai",
-  zhipu: "zhipu",
-  moonshot: "moonshot",
-  openrouter: "openrouter",
-}
-
-export function providerTypeToName(
-  type: ProviderType
-): ProviderName | null {
-  const entries = Object.entries(PROVIDER_NAME_TO_TYPE) as [
-    ProviderName,
-    ProviderType,
-  ][]
-  const found = entries.find(([, t]) => t === type)
-  return found ? found[0] : null
-}
-
-export function providerNameToType(name: ProviderName): ProviderType {
-  return PROVIDER_NAME_TO_TYPE[name]
+  stream: AsyncIterable<string>;
+  provider: string;
+  model: string;
 }

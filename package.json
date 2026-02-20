@@ -19,6 +19,14 @@
     "./prompts": {
       "types": "./src/prompts/index.ts",
       "import": "./dist/prompts/index.js"
+    },
+    "./templates": {
+      "types": "./src/templates.ts",
+      "import": "./dist/templates.js"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "import": "./dist/types.js"
     }
   },
   "scripts": {
@@ -29,33 +37,39 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@ais/analysis": "^0.0.1",
+    "@ais/db": "^0.0.1",
     "@ais/shared": "^0.0.1",
-    "@ais/analysis": "^0.0.1"
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@prisma/client": "^7.4.0",
+    "sharp": "^0.34.5",
+    "zhipu-ai-provider": "^0.2.2"
   },
   "peerDependencies": {
-    "ai": ">=4",
-    "@ai-sdk/openai": ">=1",
     "@ai-sdk/anthropic": ">=1",
-    "@ai-sdk/google": ">=1",
-    "@ai-sdk/deepseek": ">=1",
-    "@ai-sdk/mistral": ">=1",
     "@ai-sdk/cohere": ">=1",
-    "@ai-sdk/xai": ">=1",
+    "@ai-sdk/deepseek": ">=1",
+    "@ai-sdk/google": ">=1",
+    "@ai-sdk/mistral": ">=1",
+    "@ai-sdk/openai": ">=1",
     "@ai-sdk/openai-compatible": ">=0",
+    "@ai-sdk/xai": ">=1",
+    "ai": ">=4",
     "ollama-ai-provider-v2": ">=1"
   },
   "devDependencies": {
-    "ai": "^6.0.64",
-    "@ai-sdk/openai": "^3.0.23",
     "@ai-sdk/anthropic": "^3.0.44",
-    "@ai-sdk/google": "^3.0.18",
-    "@ai-sdk/deepseek": "^2.0.18",
-    "@ai-sdk/mistral": "^3.0.19",
     "@ai-sdk/cohere": "^3.0.19",
-    "@ai-sdk/xai": "^3.0.50",
+    "@ai-sdk/deepseek": "^2.0.18",
+    "@ai-sdk/google": "^3.0.18",
+    "@ai-sdk/mistral": "^3.0.19",
+    "@ai-sdk/openai": "^3.0.23",
     "@ai-sdk/openai-compatible": "^2.0.30",
-    "ollama-ai-provider-v2": "^3.0.3",
+    "@ai-sdk/xai": "^3.0.50",
     "@types/node": "^22",
+    "@types/sharp": "^0.32.0",
+    "ai": "^6.0.64",
+    "ollama-ai-provider-v2": "^3.0.3",
     "tsup": "^8",
     "typescript": "^5"
   }

@@ -17,21 +17,30 @@ export type {
   ModelInfo,
   ValidationResult,
   ResolutionResult,
-  ProviderStaticConfig,
+  ResolutionRequirements,
   GenerateOptions,
   GenerateResult,
   StreamResult,
+  FeatureMappingInput,
+  FeatureConfig,
+  FeatureMappingConfig,
+  ProviderWithModels,
+} from "./types.js"
+
+// ai 패키지 타입 재수출
+export type {
   LanguageModel,
   LanguageModelUsage,
   ModelMessage,
-} from "./types.js"
+} from "ai"
 
 export {
   PROVIDER_CONFIGS,
-  COST_PER_MILLION_TOKENS,
   PROVIDER_NAME_TO_TYPE,
   providerTypeToName,
   providerNameToType,
+  COST_PER_MILLION_TOKENS as LLM_COST_CONFIG,
+  COST_PER_MILLION_TOKENS,
 } from "./types.js"
 
 // 암호화
@@ -57,6 +66,15 @@ export {
   FailoverError,
 } from "./router/index.js"
 
+// Universal Router / Base Router Functions
+export {
+  generateWithProvider,
+  generateWithSpecificProvider,
+  streamWithProvider,
+  generateWithVision,
+  generateVisionWithSpecificProvider,
+} from "./universal-router.js"
+
 export type {
   BudgetPeriod,
   BudgetAlert,
@@ -66,3 +84,62 @@ export type {
   ProviderError,
   TrackFailureFn,
 } from "./router/index.js"
+
+// 템플릿
+export {
+  getProviderTemplates,
+  getProviderTemplate,
+  type ProviderTemplate,
+} from "./templates.js"
+
+// 설정 및 레지스트리
+export {
+  getEnabledProvidersWithVision,
+  getEnabledProviders,
+} from "./config.js"
+
+export {
+  syncProviderModels,
+  validateProvider,
+} from "./registry-sync.js"
+
+export {
+  getProviderRegistry,
+  type ProviderRegistry,
+} from "./provider-registry.js"
+
+// 사용량 및 라우팅 추가 함수
+export {
+  checkAllBudgetThresholds,
+  getBudgetSummary,
+} from "./smart-routing.js"
+
+export {
+  getUsageStats,
+  getUsageStatsByProvider,
+  getUsageStatsByFeature,
+  getCurrentPeriodCost,
+} from "./usage-tracker.js"
+
+export {
+  getMonthlyAggregations,
+  getMonthlyTotalCost,
+  getYearlyCostTrend,
+  aggregateMonthlyUsage,
+  aggregatePreviousMonth,
+  cleanupOldUsageData,
+} from "./usage-aggregation.js"
+
+// Feature Resolver Export
+export { FeatureResolver } from "./feature-resolver.js"
+
+// 테스트 유틸리티
+export {
+  testProviderConnection,
+} from "./test-provider.js"
+
+export {
+  checkOllamaHealth,
+  testOllamaConnection,
+  getOllamaModels,
+} from "./providers/ollama.js"
